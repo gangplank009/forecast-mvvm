@@ -1,4 +1,4 @@
-package me.gangplank.forecastmvvm.weather.current
+package me.gangplank.forecastmvvm.ui.weather.current
 
 import androidx.lifecycle.ViewModel;
 

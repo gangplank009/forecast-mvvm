@@ -1,4 +1,4 @@
-package me.gangplank.forecastmvvm.settings
+package me.gangplank.forecastmvvm.ui.settings
 
 import androidx.fragment.app.Fragment
 
