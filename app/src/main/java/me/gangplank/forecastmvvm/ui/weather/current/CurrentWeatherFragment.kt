@@ -16,12 +16,16 @@ import me.gangplank.forecastmvvm.R
 import me.gangplank.forecastmvvm.data.network.ApixuWeatherApiService
 import me.gangplank.forecastmvvm.data.network.ConnectivityInterceptorImpl
 import me.gangplank.forecastmvvm.data.network.WeatherNetworkDataSourceImpl
+import me.gangplank.forecastmvvm.ui.base.ScopedFragment
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class CurrentWeatherFragment : Fragment() {
+class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
 
-    companion object {
-        fun newInstance() = CurrentWeatherFragment()
-    }
+    override val kodein by closestKodein()
+    private val viewModelFactory: CurrentWeatherViewModelFactory by instance()
 
     private lateinit var viewModel: CurrentWeatherViewModel
 
@@ -34,18 +38,17 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CurrentWeatherViewModel::class.java)
-        // TODO: Use the ViewModel
-        val apiService = ApixuWeatherApiService(ConnectivityInterceptorImpl(this.context!!))
-        val weatherNetworkDataSource = WeatherNetworkDataSourceImpl(apiService)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(CurrentWeatherViewModel::class.java)
+        bindUI()
+    }
 
-        weatherNetworkDataSource.downloadedCurrentWeather.observe(this, Observer {
+    private fun bindUI() = launch {
+        val currentWeather = viewModel.weather.await()
+        currentWeather.observe(this@CurrentWeatherFragment, Observer {
+            if (it == null) return@Observer
             current_weather_text_view.text = it.toString()
         })
-
-        GlobalScope.launch(Dispatchers.Main) {
-            weatherNetworkDataSource.fetchCurrentWeather("London", "en")
-        }
     }
 
 }
