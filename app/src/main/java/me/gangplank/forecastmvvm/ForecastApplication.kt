@@ -4,6 +4,8 @@ import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
 import me.gangplank.forecastmvvm.data.db.ForecastDatabase
 import me.gangplank.forecastmvvm.data.network.*
+import me.gangplank.forecastmvvm.data.provider.UnitProvider
+import me.gangplank.forecastmvvm.data.provider.UnitProviderImpl
 import me.gangplank.forecastmvvm.data.repository.ForecastRepository
 import me.gangplank.forecastmvvm.data.repository.ForecastRepositoryImpl
 import me.gangplank.forecastmvvm.ui.weather.current.CurrentWeatherViewModelFactory
@@ -28,7 +30,8 @@ class ForecastApplication: Application(), KodeinAware {
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
         bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
         // bind<CurrentWeatherViewModelFactory>() with provider { CurrentWeatherViewModelFactory(instance()) }
-        bind() from provider { CurrentWeatherViewModelFactory(instance()) }
+        bind<UnitProvider>() with singleton { UnitProviderImpl(instance()) }
+        bind() from provider { CurrentWeatherViewModelFactory(instance(), instance()) }
     }
 
     override fun onCreate() {
