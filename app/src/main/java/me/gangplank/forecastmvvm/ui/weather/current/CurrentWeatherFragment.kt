@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ import me.gangplank.forecastmvvm.R
 import me.gangplank.forecastmvvm.data.network.ApixuWeatherApiService
 import me.gangplank.forecastmvvm.data.network.ConnectivityInterceptorImpl
 import me.gangplank.forecastmvvm.data.network.WeatherNetworkDataSourceImpl
+import me.gangplank.forecastmvvm.internal.glide.GlideApp
 import me.gangplank.forecastmvvm.ui.base.ScopedFragment
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -47,8 +49,62 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
         val currentWeather = viewModel.weather.await()
         currentWeather.observe(this@CurrentWeatherFragment, Observer {
             if (it == null) return@Observer
-            current_weather_text_view.text = it.toString()
+
+            group_loading.visibility = View.GONE
+            group_weather.visibility = View.VISIBLE
+
+            updateLocation("Los Angeles")
+            updateDayToToday()
+            updateTemperature(it.temperature, it.feelsLikeTemperature)
+            updateCondition(it.conditionText)
+            updatePrecipitation(it.precipitationVolume)
+            updateWind(it.windDirection, it.windSpeed)
+            updateVisibility(it.visibilityDistance)
+
+            GlideApp.with(this@CurrentWeatherFragment)
+                .load("https:${it.conditionIconUrl}")
+                .into(imageView_condition_icon)
+
         })
     }
 
+    private fun chooseLocalizedUnitAbbreviation(metric: String, imperial: String): String {
+        return if (viewModel.isMetric)
+            metric
+        else
+            imperial
+    }
+
+    private fun updateLocation(location: String) {
+        (activity as AppCompatActivity).supportActionBar?.title = location
+    }
+
+    private fun updateDayToToday() {
+        (activity as AppCompatActivity).supportActionBar?.subtitle = "Today"
+    }
+
+    private fun updateTemperature(temperature: Double, feelslike: Double) {
+        val unitAbbreviation = chooseLocalizedUnitAbbreviation("°C", "°F")
+        textView_temperature.text = "$temperature$unitAbbreviation"
+        textView_feelslike_temperature.text = "Feels like $feelslike$unitAbbreviation"
+    }
+
+    private fun updateCondition(condition: String) {
+        textView_condition.text = condition
+    }
+
+    private fun updatePrecipitation(precipitationValue: Double) {
+        val unitAbbreviation = chooseLocalizedUnitAbbreviation("mm", "in")
+        textView_precipitation.text = "Precipitation: $precipitationValue $unitAbbreviation"
+    }
+
+    private fun updateWind(windDirection: String, windSpeed: Double) {
+        val unitAbbreviation = chooseLocalizedUnitAbbreviation("kmh", "mph")
+        textView_wind.text = "Wind: $windDirection, $windSpeed $unitAbbreviation"
+    }
+
+    private fun updateVisibility(visibilityDistance: Double) {
+        val unitAbbreviation = chooseLocalizedUnitAbbreviation("km", "mi")
+        textView_visibility.text = "Visibility: $visibilityDistance $unitAbbreviation"
+    }
 }
