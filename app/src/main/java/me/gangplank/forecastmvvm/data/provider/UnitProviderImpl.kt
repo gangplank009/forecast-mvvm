@@ -7,11 +7,7 @@ import me.gangplank.forecastmvvm.internal.UnitSystem
 
 const val UNIT_SYSTEM = "UNIT_SYSTEM"
 
-class UnitProviderImpl(contex: Context) : UnitProvider {
-    private val appContext = contex.applicationContext
-
-    private val preferences: SharedPreferences
-    get() = PreferenceManager.getDefaultSharedPreferences(appContext)
+class UnitProviderImpl(context: Context) : PreferenceProvider(context), UnitProvider {
 
     override fun getUnitSystem(): UnitSystem {
         val selectedName = preferences.getString(UNIT_SYSTEM, UnitSystem.METRIC.name)

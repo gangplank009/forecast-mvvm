@@ -1,9 +1,12 @@
 package me.gangplank.forecastmvvm
 
 import android.app.Application
+import androidx.preference.PreferenceManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import me.gangplank.forecastmvvm.data.db.ForecastDatabase
 import me.gangplank.forecastmvvm.data.network.*
+import me.gangplank.forecastmvvm.data.provider.LocationProvider
+import me.gangplank.forecastmvvm.data.provider.LocationProviderImpl
 import me.gangplank.forecastmvvm.data.provider.UnitProvider
 import me.gangplank.forecastmvvm.data.provider.UnitProviderImpl
 import me.gangplank.forecastmvvm.data.repository.ForecastRepository
@@ -25,10 +28,12 @@ class ForecastApplication: Application(), KodeinAware {
         bind() from singleton { ForecastDatabase(instance()) }
         // bind<CurrentWeatherDao>() with singleton { instance<ForecastDatabase>().currentWeatherDao() }
         bind() from singleton { instance<ForecastDatabase>().currentWeatherDao() }
+        bind() from singleton { instance<ForecastDatabase>().weatherLocationDao() }
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApixuWeatherApiService(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
-        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
+        bind<LocationProvider>() with singleton { LocationProviderImpl() }
+        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance(), instance()) }
         // bind<CurrentWeatherViewModelFactory>() with provider { CurrentWeatherViewModelFactory(instance()) }
         bind<UnitProvider>() with singleton { UnitProviderImpl(instance()) }
         bind() from provider { CurrentWeatherViewModelFactory(instance(), instance()) }
@@ -37,5 +42,6 @@ class ForecastApplication: Application(), KodeinAware {
     override fun onCreate() {
         super.onCreate()
         AndroidThreeTen.init(this)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
     }
 }
