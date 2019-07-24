@@ -1,4 +1,4 @@
-package me.gangplank.forecastmvvm.data.db.unitslocalized
+package me.gangplank.forecastmvvm.data.db.unitslocalized.current
 
 interface UnitSpecificCurrentWeatherEntry {
     val temperature: Double

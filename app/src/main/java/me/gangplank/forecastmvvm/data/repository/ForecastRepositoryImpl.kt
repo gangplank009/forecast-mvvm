@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import me.gangplank.forecastmvvm.data.db.CurrentWeatherDao
 import me.gangplank.forecastmvvm.data.db.WeatherLocationDao
 import me.gangplank.forecastmvvm.data.db.entity.WeatherLocation
-import me.gangplank.forecastmvvm.data.db.unitslocalized.UnitSpecificCurrentWeatherEntry
+import me.gangplank.forecastmvvm.data.db.unitslocalized.current.UnitSpecificCurrentWeatherEntry
 import me.gangplank.forecastmvvm.data.network.WeatherNetworkDataSource
 import me.gangplank.forecastmvvm.data.network.response.CurrentWeatherResponse
 import me.gangplank.forecastmvvm.data.provider.LocationProvider

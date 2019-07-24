@@ -3,6 +3,7 @@ package me.gangplank.forecastmvvm.data.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kotlinx.coroutines.Deferred
 import me.gangplank.forecastmvvm.data.network.response.CurrentWeatherResponse
+import me.gangplank.forecastmvvm.data.network.response.FutureWeatherResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -21,6 +22,13 @@ interface ApixuWeatherApiService {
         @Query(value = "q") location: String,
         @Query(value = "lang") languageCode: String = "en"
     ): Deferred<CurrentWeatherResponse>
+
+    @GET("forecast.json")
+    fun getFutureWeather(
+        @Query(value = "q") location: String,
+        @Query(value = "days") days: Int,
+        @Query(value = "lang") languageCode: String = "en"
+    ): Deferred<FutureWeatherResponse>
 
     companion object {
         operator fun invoke(

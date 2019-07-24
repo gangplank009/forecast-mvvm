@@ -4,16 +4,20 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import me.gangplank.forecastmvvm.data.db.entity.CurrentWeatherEntry
+import me.gangplank.forecastmvvm.data.db.entity.FutureWeatherEntry
 import me.gangplank.forecastmvvm.data.db.entity.WeatherLocation
 
 @Database(
-    entities = arrayOf(CurrentWeatherEntry::class, WeatherLocation::class),
+    entities = arrayOf(CurrentWeatherEntry::class, WeatherLocation::class, FutureWeatherEntry::class),
     version = 1
 )
+@TypeConverters(LocalDateConverter::class)
 abstract class ForecastDatabase : RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun weatherLocationDao(): WeatherLocationDao
+    abstract fun futureWeatherDao(): FutureWeatherDao
 
     companion object {
         @Volatile
@@ -27,7 +31,7 @@ abstract class ForecastDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context): ForecastDatabase =
             Room.databaseBuilder(
                 context.applicationContext,
-                ForecastDatabase::class.java, "forecast.db"
+                ForecastDatabase::class.java, "forecastDaysContainer.db"
             )
                 .build()
     }
