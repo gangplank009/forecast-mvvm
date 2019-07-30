@@ -1,17 +1,22 @@
-package me.gangplank.forecastmvvm.ui.weather.current
+package me.gangplank.forecastmvvm.ui.base
 
+import androidx.lifecycle.ViewModel
 import me.gangplank.forecastmvvm.data.provider.UnitProvider
 import me.gangplank.forecastmvvm.data.repository.ForecastRepository
+import me.gangplank.forecastmvvm.internal.UnitSystem
 import me.gangplank.forecastmvvm.internal.lazyDeferred
-import me.gangplank.forecastmvvm.ui.base.WeatherViewModel
 
-class CurrentWeatherViewModel(
+abstract class WeatherViewModel(
     private val forecastRepository: ForecastRepository,
     unitProvider: UnitProvider
-) : WeatherViewModel(forecastRepository, unitProvider) {
+) : ViewModel() {
+
     private val unitSystem = unitProvider.getUnitSystem() //get from Settings
 
-    val weather by lazyDeferred {
-        forecastRepository.getCurrentWeather(super.isMetricUnit)
+    val isMetricUnit: Boolean
+    get() = unitSystem == UnitSystem.METRIC
+
+    val weatherLocation by lazyDeferred {
+        forecastRepository.getWeatherLocation()
     }
 }
