@@ -1,25 +1,17 @@
 package me.gangplank.forecastmvvm.ui.weather.current
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.current_weather_fragment.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
 import me.gangplank.forecastmvvm.R
-import me.gangplank.forecastmvvm.data.network.ApixuWeatherApiService
-import me.gangplank.forecastmvvm.data.network.ConnectivityInterceptorImpl
-import me.gangplank.forecastmvvm.data.network.WeatherNetworkDataSourceImpl
 import me.gangplank.forecastmvvm.internal.glide.GlideApp
 import me.gangplank.forecastmvvm.ui.base.ScopedFragment
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -77,7 +69,7 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun chooseLocalizedUnitAbbreviation(metric: String, imperial: String): String {
-        return if (viewModel.isMetric)
+        return if (viewModel.isMetricUnit)
             metric
         else
             imperial
