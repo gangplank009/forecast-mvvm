@@ -7,10 +7,8 @@ import androidx.annotation.RequiresApi
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import me.gangplank.forecastmvvm.R
-import me.gangplank.forecastmvvm.data.db.unitslocalized.future.UnitSpecificSimpleFutureWeatherEntry
-import kotlinx.android.synthetic.main.future_list_weather_fragment.*
-import me.gangplank.forecastmvvm.data.db.unitslocalized.future.ImperialSimpleFutureWeatherEntry
-import me.gangplank.forecastmvvm.data.db.unitslocalized.future.MetricsSimpleFutureWeatherEntry
+import me.gangplank.forecastmvvm.data.db.unitslocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
+import me.gangplank.forecastmvvm.data.db.unitslocalized.future.list.MetricsSimpleFutureWeatherEntry
 import me.gangplank.forecastmvvm.internal.glide.GlideApp
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter

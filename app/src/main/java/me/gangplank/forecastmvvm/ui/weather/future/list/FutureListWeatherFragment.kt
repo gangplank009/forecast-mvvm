@@ -3,7 +3,6 @@ package me.gangplank.forecastmvvm.ui.weather.future.list
 import android.os.Build
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.GroupAdapter
@@ -20,12 +21,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 import me.gangplank.forecastmvvm.R
-import me.gangplank.forecastmvvm.data.db.unitslocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import me.gangplank.forecastmvvm.data.db.LocalDateConverter
+import me.gangplank.forecastmvvm.data.db.unitslocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import me.gangplank.forecastmvvm.ui.base.ScopedFragment
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import org.threeten.bp.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 class FutureListWeatherFragment : ScopedFragment(), KodeinAware {
@@ -95,7 +98,15 @@ class FutureListWeatherFragment : ScopedFragment(), KodeinAware {
         }
 
         groupAdapter.setOnItemClickListener { item, view ->
-            Toast.makeText(this@FutureListWeatherFragment.context, "Clicked", Toast.LENGTH_SHORT).show()
+            (item as? FutureWeatherItem)?.let {
+                showWeatherDetail(it.weatherEntry.date, view)
+            }
         }
+    }
+
+    private fun showWeatherDetail(date: LocalDate, view: View) {
+        val dateString = LocalDateConverter.dateToString(date)
+        val actionDetail = FutureListWeatherFragmentDirections.actionDetail(dateString!!)
+        Navigation.findNavController(view).navigate(actionDetail)
     }
 }

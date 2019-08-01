@@ -15,14 +15,13 @@ import me.gangplank.forecastmvvm.data.provider.UnitProviderImpl
 import me.gangplank.forecastmvvm.data.repository.ForecastRepository
 import me.gangplank.forecastmvvm.data.repository.ForecastRepositoryImpl
 import me.gangplank.forecastmvvm.ui.weather.current.CurrentWeatherViewModelFactory
+import me.gangplank.forecastmvvm.ui.weather.future.detail.FutureDetailWeatherViewModelFactory
 import me.gangplank.forecastmvvm.ui.weather.future.list.FutureListWeatherViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
-import org.kodein.di.generic.singleton
+import org.kodein.di.generic.*
+import org.threeten.bp.LocalDate
 
 class ForecastApplication: Application(), KodeinAware {
     override val kodein = Kodein.lazy {
@@ -40,10 +39,11 @@ class ForecastApplication: Application(), KodeinAware {
         bind() from provider { LocationServices.getFusedLocationProviderClient(instance<Context>()) }
         bind<LocationProvider>() with singleton { LocationProviderImpl(instance(), instance()) }
         bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance(), instance(), instance(), instance()) }
-        // bind<CurrentWeatherViewModelFactory>() with provider { CurrentWeatherViewModelFactory(instance()) }
         bind<UnitProvider>() with singleton { UnitProviderImpl(instance()) }
+        // bind<CurrentWeatherViewModelFactory>() with provider { CurrentWeatherViewModelFactory(instance()) }
         bind() from provider { CurrentWeatherViewModelFactory(instance(), instance()) }
         bind() from provider { FutureListWeatherViewModelFactory(instance(), instance()) }
+        bind() from factory { detailDate: LocalDate -> FutureDetailWeatherViewModelFactory(detailDate, instance(), instance()) }
     }
 
     override fun onCreate() {

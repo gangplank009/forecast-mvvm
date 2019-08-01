@@ -10,7 +10,8 @@ import me.gangplank.forecastmvvm.data.db.FutureWeatherDao
 import me.gangplank.forecastmvvm.data.db.WeatherLocationDao
 import me.gangplank.forecastmvvm.data.db.entity.WeatherLocation
 import me.gangplank.forecastmvvm.data.db.unitslocalized.current.UnitSpecificCurrentWeatherEntry
-import me.gangplank.forecastmvvm.data.db.unitslocalized.future.UnitSpecificSimpleFutureWeatherEntry
+import me.gangplank.forecastmvvm.data.db.unitslocalized.future.detail.UnitSpecificDetailFutureWeatherEntry
+import me.gangplank.forecastmvvm.data.db.unitslocalized.future.list.UnitSpecificSimpleFutureWeatherEntry
 import me.gangplank.forecastmvvm.data.network.FORECAST_DAYS_COUNT
 import me.gangplank.forecastmvvm.data.network.WeatherNetworkDataSource
 import me.gangplank.forecastmvvm.data.network.response.CurrentWeatherResponse
@@ -63,6 +64,17 @@ class ForecastRepositoryImpl(
             initWeatherData()
             return@withContext if (metric) futureWeatherDao.getSimpleWeatherForecastMetric(startDate)
             else futureWeatherDao.getSimpleWeatherForecastImperial(startDate)
+        }
+    }
+
+    override suspend fun getFutureWeatherByDate(
+        date: LocalDate,
+        metric: Boolean
+    ): LiveData<out UnitSpecificDetailFutureWeatherEntry> {
+        return withContext(Dispatchers.IO) {
+            initWeatherData()
+            return@withContext if (metric) futureWeatherDao.getDetailedWeatherByDateMetric(date)
+            else futureWeatherDao.getDetailedWeatherByDateImperial(date)
         }
     }
 

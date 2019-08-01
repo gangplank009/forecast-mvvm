@@ -1,4 +1,4 @@
-package me.gangplank.forecastmvvm.data.db.unitslocalized.future
+package me.gangplank.forecastmvvm.data.db.unitslocalized.future.list
 
 import androidx.room.ColumnInfo
 import org.threeten.bp.LocalDate
